@@ -10,7 +10,8 @@ public:
     EGeneticStripSolver(const EReceiver<EGeneticResults>& rec,
                         const EStopped<EGeneticResults>& stop);
 
-    bool start(const int width,
+    bool start(const EGeneticSettings& settings,
+               const int width,
                const int heightLimit,
                const QList<ESize>& data);
     bool stop();

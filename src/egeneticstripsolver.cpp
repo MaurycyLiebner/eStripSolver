@@ -8,12 +8,11 @@ EGeneticStripSolver::EGeneticStripSolver(const EReceiver<EGeneticResults>& rec,
 
 }
 
-bool EGeneticStripSolver::start(const int width,
+bool EGeneticStripSolver::start(const EGeneticSettings& settings,
+                                const int width,
                                 const int heightLimit,
                                 const QList<ESize>& data) {
     if(mG) return false;
-    EGeneticSettings genSettings;
-    genSettings.fReceiveInc = 200;
 
     EGeneticFunctions<EGeneticResults> funcs;
 
@@ -58,7 +57,7 @@ bool EGeneticStripSolver::start(const int width,
     };
 
     mG = new EGenetic<EGeneticResults>();
-    mG->start(funcs, genSettings);
+    mG->start(funcs, settings);
     return true;
 }
 
