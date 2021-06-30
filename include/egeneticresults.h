@@ -1,9 +1,18 @@
 #ifndef EGENETICRESULTS_H
 #define EGENETICRESULTS_H
 
-#include "estripsolve.h"
+#include "esize.h"
+#include <QRect>
+#include <QList>
+#include "eStripSolver_global.h"
 
-class EGeneticResults : public QList<EStripResults> {
+struct EStripResults {
+    QRect fRect;
+    QList<ESize> fData;
+    QList<QRect> fRects;
+};
+
+class ESTRIPSOLVER_EXPORT EGeneticResults : public QList<EStripResults> {
 public:
     EGeneticResults() {}
     EGeneticResults(const int width) : mWidth(width) {}

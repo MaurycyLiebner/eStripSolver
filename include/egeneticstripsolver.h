@@ -1,11 +1,11 @@
-#ifndef EGENETICCALCULATOR_H
-#define EGENETICCALCULATOR_H
+#ifndef EGENETICSTRIPSOLVER_H
+#define EGENETICSTRIPSOLVER_H
 
-#include "egenetic.h"
+#include "eStripSolver_global.h"
 #include "egeneticresults.h"
-#include "esize.h"
+#include "egenetic.h"
 
-class EGeneticStripSolver {
+class ESTRIPSOLVER_EXPORT EGeneticStripSolver {
 public:
     EGeneticStripSolver(const EReceiver<EGeneticResults>& rec,
                         const EStopped<EGeneticResults>& stop);
@@ -21,4 +21,4 @@ private:
     EGenetic<EGeneticResults>* mG = nullptr;
 };
 
-#endif // EGENETICCALCULATOR_H
+#endif // EGENETICSTRIPSOLVER_H

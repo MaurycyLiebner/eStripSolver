@@ -1,4 +1,6 @@
-#include "egeneticresults.h"
+#include "../include/egeneticresults.h"
+
+#include "estripsolve.h"
 
 void EGeneticResults::randomMove() {
     const int r0id = rand() % count();

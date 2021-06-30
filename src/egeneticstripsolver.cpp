@@ -1,4 +1,6 @@
-#include "egeneticcalculator.h"
+#include "../include/egeneticstripsolver.h"
+
+#include "../src/estripsolve.h"
 
 EGeneticStripSolver::EGeneticStripSolver(const EReceiver<EGeneticResults>& rec,
                                          const EStopped<EGeneticResults>& stop) :

@@ -4,13 +4,8 @@
 #include <QList>
 #include <QRect>
 
-#include "esize.h"
-
-struct EStripResults {
-    QRect fRect;
-    QList<ESize> fData;
-    QList<QRect> fRects;
-};
+#include "../include/esize.h"
+#include "../include/egeneticresults.h"
 
 extern bool gStripSolve(const int width, EStripResults& output);
 

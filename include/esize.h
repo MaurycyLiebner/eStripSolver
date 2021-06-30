@@ -1,10 +1,12 @@
 #ifndef ESIZE_H
 #define ESIZE_H
 
+#include "eStripSolver_global.h"
+
 #include <QString>
 #include <QSize>
 
-struct ESize {
+struct ESTRIPSOLVER_EXPORT ESize {
     ESize() : ESize(-1, -1) {}
     ESize(const QSize& size) : ESize(size.width(), size.height()) {}
 
@@ -28,7 +30,7 @@ private:
     int mDim1;
 };
 
-bool operator==(const ESize& s0, const ESize& s1);
-bool operator!=(const ESize& s0, const ESize& s1);
+bool ESTRIPSOLVER_EXPORT operator==(const ESize& s0, const ESize& s1);
+bool ESTRIPSOLVER_EXPORT operator!=(const ESize& s0, const ESize& s1);
 
 #endif // ESIZE_H

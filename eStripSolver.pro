@@ -26,20 +26,20 @@ else:unix:!macx: INCLUDEPATH += $$PWD/../../.eGenetic/eGenetic/include
 
 HEADERS += \
     include/eStripSolver_global.h \
-    include/egeneticcalculator.h \
+    include/egeneticresults.h \
+    include/egeneticstripsolver.h \
+    include/esize.h \
     src/GuillotineBinPack.h \
     src/MaxRectsBinPack.h \
     src/Rect.h \
     src/StripPacking.h \
-    src/egeneticresults.h \
-    src/esize.h \
     src/estripsolve.h
 
 SOURCES += \
     src/GuillotineBinPack.cpp \
     src/MaxRectsBinPack.cpp \
     src/Rect.cpp \
-    src/egeneticcalculator.cpp \
     src/egeneticresults.cpp \
+    src/egeneticstripsolver.cpp \
     src/esize.cpp \
     src/estripsolve.cpp

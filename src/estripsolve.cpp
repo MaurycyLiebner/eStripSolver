@@ -2,9 +2,9 @@
 
 #include <functional>
 
-#include "algorithms/StripPacking.h"
-#include "algorithms/GuillotineBinPack.h"
-#include "algorithms/MaxRectsBinPack.h"
+#include "StripPacking.h"
+#include "GuillotineBinPack.h"
+#include "MaxRectsBinPack.h"
 
 using namespace rbp;
 
