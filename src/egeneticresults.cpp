@@ -5,7 +5,6 @@
 void EGeneticResults::randomMove() {
     const int r0id = rand() % count();
     const int r1id = rand() % count();
-    if(r0id == r1id) return;
 
     auto& r0 = this->operator[](r0id);
     if(r0.fData.count() < 2) return;
@@ -16,7 +15,7 @@ void EGeneticResults::randomMove() {
     r1.fData.append(d0);
 
     gStripSolve(mWidth, r0);
-    gStripSolve(mWidth, r1);
+    if(&r0 != &r1) gStripSolve(mWidth, r1);
 }
 
 void EGeneticResults::randomSplit() {
@@ -40,9 +39,9 @@ void EGeneticResults::randomSplit() {
 void EGeneticResults::randomJoin() {
     if(count() < 2) return;
     const int r0id = rand() % count();
-    const int r1id = rand() % (count() - 1);
-
     const auto r0 = takeAt(r0id);
+
+    const int r1id = rand() % count();
     const auto r1 = takeAt(r1id);
 
     EStripResults r;

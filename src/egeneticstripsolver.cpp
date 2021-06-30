@@ -33,13 +33,15 @@ bool EGeneticStripSolver::start(const EGeneticSettings& settings,
         } else {
             results = r2;
         }
-        const int i = rand() % 3;
-        if(i == 0) {
-            results.randomJoin();
-        } else if(i == 1) {
-            results.randomSplit();
+        const int jMax = rand() % 4 + 1;
+        for(int  j = 0; j < jMax; j++) {
+            const int i = rand() % 3;
+            if(i == 0) {
+                results.randomJoin();
+            } else if(i == 1) {
+                results.randomSplit();
+            } else results.randomMove();
         }
-        results.randomMove();
         return results;
     };
 
