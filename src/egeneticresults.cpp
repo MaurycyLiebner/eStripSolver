@@ -62,5 +62,5 @@ int EGeneticResults::totalHeight(const int maxHeight) const {
         const int h = r.fRect.bottom();
         result += h + 2*(h > maxHeight ? h - maxHeight : 0);
     }
-    return (1 + 0.01*count())*result;
+    return (1 + 0.01*count())*(result + count());
 }
