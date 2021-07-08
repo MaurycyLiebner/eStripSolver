@@ -2,13 +2,13 @@
 
 #include "../src/estripsolve.h"
 
-EGeneticStripSolver::EGeneticStripSolver(const EReceiver<EGeneticResults>& rec,
-                                         const EStopped<EGeneticResults>& stop) :
-    mRec(rec), mStop(stop) {
+EGeneticStripSolver::EGeneticStripSolver() {
 
 }
 
-bool EGeneticStripSolver::start(const EGeneticSettings& settings,
+bool EGeneticStripSolver::start(const EReceiver<EGeneticResults>& rec,
+                                const EStopped<EGeneticResults>& stop,
+                                const EGeneticSettings& settings,
                                 const int width,
                                 const int heightLimit,
                                 const QList<ESize>& data) {
@@ -45,14 +45,14 @@ bool EGeneticStripSolver::start(const EGeneticSettings& settings,
         return results;
     };
 
-    funcs.fStopped = [this]() {
+    funcs.fStopped = [this, stop]() {
         const auto g = mG;
         mG = nullptr;
-        mStop();
+        stop();
         delete g;
     };
 
-    funcs.fReceiver = mRec;;
+    funcs.fReceiver = rec;
 
     funcs.fSelector = [heightLimit](const EGeneticResults& r) {
         return r.totalHeight(heightLimit);

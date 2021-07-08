@@ -7,18 +7,16 @@
 
 class ESTRIPSOLVER_EXPORT EGeneticStripSolver {
 public:
-    EGeneticStripSolver(const EReceiver<EGeneticResults>& rec,
-                        const EStopped<EGeneticResults>& stop);
+    EGeneticStripSolver();
 
-    bool start(const EGeneticSettings& settings,
+    bool start(const EReceiver<EGeneticResults>& rec,
+               const EStopped<EGeneticResults>& stop,
+               const EGeneticSettings& settings,
                const int width,
                const int heightLimit,
                const QList<ESize>& data);
     bool stop();
 private:
-    const EReceiver<EGeneticResults> mRec;
-    const EStopped<EGeneticResults> mStop;
-
     EGenetic<EGeneticResults>* mG = nullptr;
 };
 
