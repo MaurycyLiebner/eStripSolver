@@ -29,14 +29,12 @@ HEADERS += \
     include/egeneticresults.h \
     include/egeneticstripsolver.h \
     include/esize.h \
-    src/GuillotineBinPack.h \
     src/MaxRectsBinPack.h \
     src/Rect.h \
     src/StripPacking.h \
     src/estripsolve.h
 
 SOURCES += \
-    src/GuillotineBinPack.cpp \
     src/MaxRectsBinPack.cpp \
     src/Rect.cpp \
     src/egeneticresults.cpp \

@@ -3,16 +3,12 @@
 #include <functional>
 
 #include "StripPacking.h"
-#include "GuillotineBinPack.h"
 #include "MaxRectsBinPack.h"
 
 using namespace rbp;
 
 struct ECalculation {
     QRect fRect;
-    int fAlgorithm;
-    GuillotineBinPack::GuillotineSplitHeuristic fGuillSplit;
-    GuillotineBinPack::FreeRectChoiceHeuristic fGuillChoice;
     MaxRectsBinPack::FreeRectChoiceHeuristic fMaxChoice;
 
     int bottom() const { return fRect.bottom(); }
@@ -51,75 +47,41 @@ bool calc(const int width,
           ECalculation& perm,
           const QList<ESize>& data,
           QList<QRect>& sol) {
-    if(perm.fAlgorithm == 0) {
-        GuillotineBinPack g(width, height);
-        const auto choice = perm.fGuillChoice;
-        const auto split = perm.fGuillSplit;
-
-        const auto alg = [&g, choice, split](const int wm, const int hm) {
-            return g.Insert(wm, hm, true, choice, split);
-        };
-        return calc(alg, perm, data, sol);
-    } else {
-        MaxRectsBinPack g(width, height);
-        const auto choice = perm.fMaxChoice;
-        const auto alg = [&g, choice](const int wm, const int hm) {
-            return g.Insert(wm, hm, choice);
-        };
-        return calc(alg, perm, data, sol);
-    }
+    MaxRectsBinPack g(width, height);
+    const auto choice = perm.fMaxChoice;
+    const auto alg = [&g, choice](const int wm, const int hm) {
+        return g.Insert(wm, hm, choice);
+    };
+    return calc(alg, perm, data, sol);
 }
-
 
 bool calcSols(const int width,
               const int height,
               EStripResults& results) {
     const QList<ESize>& data = results.fData;
     QList<ECalculation> calcs;
-    for(const int a : {0, 1}) {
-        using GSH = GuillotineBinPack::GuillotineSplitHeuristic;
-        using GFRCH = GuillotineBinPack::FreeRectChoiceHeuristic;
-        using MFRCH = MaxRectsBinPack::FreeRectChoiceHeuristic;
-        if(a == 0) { // Guill
-            const auto mfrch = static_cast<MFRCH>(0);
-            const int cMax = GuillotineBinPack::RectWorstLongSideFit;
-            for(int c = 0; c <= cMax; c++) {
-                const auto choice = static_cast<GFRCH>(c);
-                const int sMax = GuillotineBinPack::SplitLongerAxis;
-                for(int s = 0; s <= sMax; s++) {
-                    const auto split = static_cast<GSH>(s);
-                    calcs << ECalculation{QRect(), 1, split, choice, mfrch};
-                }
-            }
-        } else { // Max
-            const auto gsh = static_cast<GSH>(0);
-            const auto gfrch = static_cast<GFRCH>(0);
-            const int cMax = MaxRectsBinPack::RectContactPointRule;
-            for(int c = 0; c <= cMax; c++) {
-                const auto choice = static_cast<MFRCH>(c);
-                calcs << ECalculation{QRect(), 1, gsh, gfrch, choice};
-            }
-        }
+
+    using MFRCH = MaxRectsBinPack::FreeRectChoiceHeuristic;
+    const int cMax = MaxRectsBinPack::RectContactPointRule;
+    for(int c = 0; c <= cMax; c++) {
+        const auto choice = static_cast<MFRCH>(c);
+        calcs << ECalculation{QRect(), choice};
     }
 
-    QList<ECalculation> validcalcs;
+    bool found = false;
+    int lowestHeight = INT_MAX;
     for(auto& cal : calcs) {
         QList<QRect> sols;
         const bool valid = calc(width, height, cal, data, sols);
-        if(valid) validcalcs << cal;
+        const int h = cal.bottom();
+        if(valid && h < lowestHeight) {
+            results.fRects = sols;
+            results.fRect = cal.fRect;
+            lowestHeight = h;
+            found = true;
+        }
     }
-
-    if(validcalcs.isEmpty()) return false;
-
-    const auto sorter = [](const ECalculation& a, const ECalculation& b) {
-        return a.bottom() < b.bottom();
-    };
-    std::sort(validcalcs.begin(), validcalcs.end(), sorter);
-
-    auto bestCalc = validcalcs.first();
-    calc(width, height, bestCalc, data, results.fRects);
-    results.fRect = bestCalc.fRect;
-    return true;
+    return found;
 }
 
 void setSolution(const StripPacking::Solution& sol, EStripResults& results) {
@@ -141,17 +103,19 @@ bool gStripSolve(const int width, EStripResults& output) {
     EStripResults results = output;
     const auto& data = results.fData;
 
-    if(!calcSols(width, 100000, results)) return false;
+    if(!calcSols(width, 1000000, results)) return false;
 
     {
-        int h = results.fRect.bottom();
+        int height = results.fRect.bottom();
         for(;;) {
-            h -= 50;
+            const int h = height - 50;
             if(h < 0) break;
             EStripResults res = results;
             const bool r = calcSols(width, h, res);
-            if(r) results = res;
-            else break;
+            if(r) {
+                results = res;
+                height = h;
+            } else break;
         }
 
         StripPacking::StripProblem solverNFDH(width);
@@ -174,16 +138,15 @@ bool gStripSolve(const int width, EStripResults& output) {
         solverBFDH.SetAlgorithm<StripPacking::Algorithms::BFDH>();
         const auto solutionBFDH = solverBFDH.Solve();
 
-        int currentHeight = h;
-        if(solutionNFDH.height_ < currentHeight) {
-            currentHeight = solutionNFDH.height_;
+        if(solutionNFDH.height_ < height) {
+            height = solutionNFDH.height_;
             setSolution(solutionNFDH, results);
         }
-        if(solutionFFDH.height_ < currentHeight) {
-            currentHeight = solutionFFDH.height_;
+        if(solutionFFDH.height_ < height) {
+            height = solutionFFDH.height_;
             setSolution(solutionFFDH, results);
         }
-        if(solutionBFDH.height_ < currentHeight) {
+        if(solutionBFDH.height_ < height) {
             setSolution(solutionBFDH, results);
         }
     }
