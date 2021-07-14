@@ -64,3 +64,9 @@ int EGeneticResults::totalHeight(const int maxHeight) const {
     }
     return (1 + 0.01*count())*(result + count());
 }
+
+bool operator==(const EStripResults &s0, const EStripResults &s1) {
+    return s0.fRect == s1.fRect &&
+           s0.fData == s1.fData &&
+           s0.fRects == s1.fRects;
+}

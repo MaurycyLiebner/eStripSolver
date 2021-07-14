@@ -6,11 +6,13 @@
 #include <QList>
 #include "eStripSolver_global.h"
 
-struct EStripResults {
+struct ESTRIPSOLVER_EXPORT EStripResults {
     QRect fRect;
     QList<ESize> fData;
     QList<QRect> fRects;
 };
+
+bool ESTRIPSOLVER_EXPORT operator==(const EStripResults& s0, const EStripResults& s1);
 
 class ESTRIPSOLVER_EXPORT EGeneticResults : public QList<EStripResults> {
 public:
